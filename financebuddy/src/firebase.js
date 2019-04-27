@@ -9,5 +9,5 @@ var config = {
     storageBucket: "financebuddy-13c77.appspot.com",
     messagingSenderId: "1051906483365"
   };
-  firebase.initializeApp(config);
+  app.initializeApp(config);
 export default app;
