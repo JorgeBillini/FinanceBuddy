@@ -3,7 +3,7 @@ import firebase from '../firebase';
 import AuthContext from '../contexts/auth';
 import { Redirect } from 'react-router-dom';
 
-export default class Login extends React.Component {
+export default class Signup extends React.Component {
 
   state = {
     email: '',
@@ -19,7 +19,7 @@ export default class Login extends React.Component {
     e.preventDefault();
 
     const { email, password } = this.state;
-    firebase.auth().signInWithEmailAndPassword(email, password)
+    firebase.auth().createUserWithEmailAndPassword(email, password)
       .then((response) => {
         console.log('Returns: ', response);
       })
@@ -33,7 +33,7 @@ export default class Login extends React.Component {
     const { email, password, error } = this.state;
     const displayError = error === '' ? '' : <div className="alert alert-danger" role="alert">{error}</div>
     const displayForm = <>
-      <h1>Login</h1>
+      <h1>Sign Up</h1>
       {displayError}
       <form>
         <div className="form-group">
@@ -44,7 +44,7 @@ export default class Login extends React.Component {
           <label htmlFor="exampleInputPassword1">Password</label>
           <input type="password" className="form-control" placeholder="Password" value={password} name="password" onChange={this.handleChange} />
         </div>
-        <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Login</button>
+        <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Sign Up</button>
       </form>
     </>;
 
@@ -56,10 +56,10 @@ export default class Login extends React.Component {
               return <Redirect to='/' />
             } else {
               return displayForm;
-            }
+            } 
           }
         }
       </AuthContext.Consumer>
-    )
+    );
   }
 }
