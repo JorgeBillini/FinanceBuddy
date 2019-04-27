@@ -10,6 +10,7 @@ import Login from './containers/login';
 import Error404 from './components/error404';
 import Logout from './containers/logout';
 import Statements from './containers/statements';
+import StatementPage from './containers/statement_page';
 
 // ---- Contexts
 import AuthContext from './contexts/auth';
