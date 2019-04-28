@@ -1,15 +1,15 @@
 // NPM MODULES
-import React, {Component,} from 'react';
-import axios from 'axios';
+import React, { Component } from "react";
+import axios from "axios";
 
 // CSS MODULES
-import './statement_page.css';
+import "./statement_page.css";
 
 // COMPONENTS
-import Goal from '../components/statement_page/goal';
-import ExpenseTables from '../components/statement_page/expense_tables';
-import SaveDeleteButtons from '../components/statement_page/save_delete';
-import AddExpenseModal from '../components/statement_page/addExpense_modal';
+import Goal from "../components/statement_page/goal";
+import ExpenseTables from "../components/statement_page/expense_tables";
+import SaveDeleteButtons from "../components/statement_page/save_delete";
+import AddExpenseModal from "../components/statement_page/addExpense_modal";
 
 export default class StatementPage extends Component {
     state = {
@@ -60,21 +60,17 @@ export default class StatementPage extends Component {
         }));
     };
 
-    openExpenseModal = e => {
-        const whereToAdd = e.target.value;
-        this.setState((state) => ({
-            wantsToAddExp: !state.wantsToAddExp,
-            whereToAdd,
-        }));
-    };
-
-
-    toggleModal = e => this.setState((state) => ({
-        wantsToAddExp: !state.wantsToAddExp,
+  openExpenseModal = e => {
+    const whereToAdd = e.target.value;
+    this.setState(state => ({
+      wantsToAddExp: !state.wantsToAddExp,
+      whereToAdd
     }));
+  };
 
-    handleExpenseInfo = e => this.setState(({
-        [e.target.name]: e.target.value,
+  toggleModal = e =>
+    this.setState(state => ({
+      wantsToAddExp: !state.wantsToAddExp
     }));
 
     submitExpense = async e => {
@@ -143,14 +139,6 @@ export default class StatementPage extends Component {
         }));
     }
 
-    deleteStatement = async _ => {
-        const {id,} = this.state; 
-        const deleteStatementCall = axios.delete(`http://localhost:11235/statement`, {
-            id,
-        })
-        this.props.history.push('/');
-    }
-
     renderStatementPage = _ => {
         const {wantsToAddExp, statement, goal, fixedExp, miscExp, allExp, saved,} = this.state;
         if (saved === 'TRUE') {
@@ -185,11 +173,15 @@ export default class StatementPage extends Component {
                 </>
             );   
         };
-    };
+    }
 
-    render () {
+    render() {
         return(
-            this.renderStatementPage()
-        );
-    };
+            <>
+                {
+                    this.renderStatementPage()
+                }
+            </>
+        )
+    }
 }
