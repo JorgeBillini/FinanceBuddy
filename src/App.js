@@ -58,7 +58,7 @@ class App extends Component {
           <Route path='/' component={ Header } /> 
           <div className='container mt-5'>
             <Switch>
-              <Route path='/'  exact component={Home}></Route>
+              <Route  path='/' exact component={Home}></Route>
               <Route path='/signup' exact component={ Signup } />
               <Route path='/login' exact component={ Login } />
               <Route path='/logout' exact component={ Logout } />
