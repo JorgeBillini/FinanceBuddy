@@ -33,29 +33,17 @@ class UserProfile extends Component {
     };
   }
 
-  componentDidMount = async () => {
-    const userId = this.context.id;
-    try {
-      const userInfo = await this.getUser();
-      const goals = await this.getGoals(userInfo);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  getUser = () => {
-    const userEmail = this.context.user.email;
-
-    Axios.get(`http://localhost:11235/user/email/${userEmail}`).then(
-      userData => {
-        return userData.data.id;
-      }
-    );
-  };
+  componentDidMount() {
+    const path = this.props.location.pathname.split("/");
+    const userId = parseInt(path[path.length - 1]);
+    console.log("userid: ", userId);
+    this.getGoals(userId);
+  }
 
   getGoals = async userId => {
     try {
       const goalsData = Axios.get(`http://localhost:11235/goal/${userId}`);
+
       const newGoals = goalsData.data.map((e, i) => {
         if (i === 0) {
           const currentUser = {
@@ -102,21 +90,21 @@ class UserProfile extends Component {
       currentUser: { id }
     } = this.state;
 
-    // let goals = [...this.state.goals];
-    // const newGoal = {
-    //   target: target,
-    //   user_id: id,
-    //   name: name,
-    //   balance: "500",
-    //   expires_at: expires_at
-    // };
+    let goals = [...this.state.goals];
+    const newGoal = {
+      target: target,
+      user_id: id,
+      name: name,
+      balance: "500",
+      expires_at: expires_at
+    };
 
-    // goals.unshift(newGoal);
-    // console.log("goals: ", goals);
+    goals.unshift(newGoal);
+    console.log("goals: ", goals);
 
-    // this.setState({
-    //   goals: goals
-    // });
+    this.setState({
+      goals: goals
+    });
 
     Axios.post(`http://localhost:11235/goal/`, {
       target: target,
@@ -180,7 +168,6 @@ class UserProfile extends Component {
       </Moment>
     );
 
-    // console.log("context: ", this.context);
     const {
       currentUser: { username, email },
       goals
@@ -220,7 +207,6 @@ class UserProfile extends Component {
                     <></>
                   ) : (
                     goals.map((e, i) => {
-                      console.log("e", e);
                       return <GoalsList goal={e} />;
                     })
                   )}
