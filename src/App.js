@@ -9,8 +9,6 @@ import Signup from './containers/signup';
 import Login from './containers/login';
 import Error404 from './components/error404';
 import Logout from './containers/logout';
-navbar
-import Header from './components/navbar'
 import StatementPage from './containers/statement_page';
 
 // ---- Contexts
@@ -40,9 +38,8 @@ class App extends Component {
   render() {
     return (
       <HashRouter>
-        <Header/>
         <AuthContext.Provider value={this.state.user}>
-          <Route path='/' component={ Navbar } /> 
+          <Route path='/' component={ Header } /> 
           <div className='container mt-5'>
             <Switch>
               <Route path='/'  exact component={Home}></Route>
