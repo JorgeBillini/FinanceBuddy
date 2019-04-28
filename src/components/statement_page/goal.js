@@ -13,7 +13,7 @@ export default props => {
         <>
             <div className='container'>
                 <div className='row text-center'>
-                    <div className='col-12 col-xs-12 my-3 theme-brown-font'>
+                    <div className='col-12 theme-brown-font'>
                         <h1 style={{fontSize: 72}}>GOAL</h1>
                     </div>
                 </div>

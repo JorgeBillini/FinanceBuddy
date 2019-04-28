@@ -24,9 +24,9 @@ export default class StatementPage extends Component {
         expNameToAdd: null,
         expAmountToAdd: null,
         statement: null,
-    }
+    };
 
-    componentDidMount = () => this.loadStatementData();
+    componentDidMount = _ => this.loadStatementData();
 
     loadStatementData = async () => {
         const {id: statementID} = this.props.match.params;
@@ -42,32 +42,72 @@ export default class StatementPage extends Component {
             miscExp: state.miscExp.concat(expenses.other),
             statement,
         }));
-    }
+    };
 
-    addExpense = e => {
+    openExpenseModal = e => {
         const whereToAdd = e.target.value;
         this.setState((state) => ({
             wantsToAddExp: !state.wantsToAddExp,
             whereToAdd,
         }));
+    };
+
+
+    toggleModal = e => this.setState((state) => ({
+        wantsToAddExp: !state.wantsToAddExp,
+    }));
+
+    handleExpenseInfo = e => this.setState(({
+        [e.target.name]: e.target.value,
+    }));
+
+    submitExpense = async e => {
+        e.preventDefault();
+        
+        const {whereToAdd, expNameToAdd, expAmountToAdd, statement,} = this.state;
+        let fixed = null;
+        (whereToAdd === 'miscAdd') ? fixed = 'FALSE' : fixed = 'TRUE';
+
+        const expense = {
+            fixed,
+            amount: expAmountToAdd,
+            user_id: 1,
+            statement_id: statement.id,
+            name: expNameToAdd,
+        }
+
+        const postExpense = await axios.post('http://localhost:11235/expense', {
+            fixed,
+            amount: expAmountToAdd,
+            user_id: 1,
+            statement_id: statement.id,
+            name: expNameToAdd,
+        });
+    
+        if (fixed === 'TRUE') {
+            this.setState((state) => ({
+                fixedExp: state.fixedExp.concat(expense),
+                wantsToAddExp: !state.wantsToAddExp,
+            }));
+        } else {
+            this.setState((state) => ({
+                miscExp: state.miscExp.concat(expense),
+                wantsToAddExp: !state.wantsToAddExp,
+            }));
+        }
     }
 
-    toggleModal = e => {
-        this.setState((state) => ({
-            wantsToAddExp: !state.wantsToAddExp,
-        }))
-    }
-
-    renderStatementPage = () => {
+    renderStatementPage = _ => {
         const {wantsToAddExp,} = this.state;
         if (wantsToAddExp) {
             return(
                 <>
-                    <AddExpenseModal activeModal={wantsToAddExp} toggle={this.toggleModal} />
+                    <AddExpenseModal activeModal={wantsToAddExp} 
+                        addExpense={this.addExpense} toggle={this.toggleModal} 
+                            handleExpenseInfo={this.handleExpenseInfo} submitExpense={this.submitExpense} />
                     <Goal />
                     <RemainingBalance />
-                    <ExpenseTables fixedExp={this.state.fixedExp} miscExp={this.state.miscExp} 
-                        addExpense={this.addExpense} />
+                    <ExpenseTables fixedExp={this.state.fixedExp} miscExp={this.state.miscExp} />
                     <SaveDeleteButtons />
                 </>
             )
@@ -77,16 +117,16 @@ export default class StatementPage extends Component {
                     <Goal />
                     <RemainingBalance />
                     <ExpenseTables fixedExp={this.state.fixedExp} miscExp={this.state.miscExp} 
-                        addExpense={this.addExpense} />
+                        openExpenseModal={this.openExpenseModal} handleExpenseInfo={this.handleExpenseInfo} />
                     <SaveDeleteButtons />
                 </>
-            )   
-        }
-    }
+            );   
+        };
+    };
 
     render () {
         return(
             this.renderStatementPage()
-        )
-    }
+        );
+    };
 }
