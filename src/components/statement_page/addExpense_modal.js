@@ -29,7 +29,7 @@ export default props => {
                                 placeholder='Add Expense Amount...' onChange={handleChange}/>
                             <div className='col-12 text-right mt-2'>
                                 <button type="submit" className="theme-white theme-brown-font theme-brown-border rounded"
-                                onClick={submitExpense} >Post Expense</button>
+                                onClick={submitExpense}>Post Expense</button>
                             </div>
                         </form>
                     </ModalBody>
