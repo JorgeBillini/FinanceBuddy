@@ -1,27 +1,37 @@
-import React from 'react';
+import React, { Component } from 'react';
+// import '../login/login.css';
 import firebase from '../firebase';
 import AuthContext from '../contexts/auth';
 import { Redirect } from 'react-router-dom';
 
-export default class Login extends React.Component {
 
-  state = {
-    email: '',
-    password: '',
-    error: ''
+
+
+
+
+class Login extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      username: '',
+      password: '',
+      error: ''
+    }
   }
-
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
+    // console.log(e.target.value);
   }
+
 
   handleSubmit = (e) => {
     e.preventDefault();
 
-    const { email, password } = this.state;
-    firebase.auth().signInWithEmailAndPassword(email, password)
+    const { username, password } = this.state;
+    firebase.auth().signInWithEmailAndPassword(username, password)
       .then((response) => {
-        console.log('Returns: ', response);
+        // console.log('Returns: ', response);
       })
       .catch(err => {
         const { message } = err;
@@ -29,37 +39,54 @@ export default class Login extends React.Component {
       })
   }
 
-  render() {
-    const { email, password, error } = this.state;
-    const displayError = error === '' ? '' : <div className="alert alert-danger" role="alert">{error}</div>
-    const displayForm = <>
-      <h1>Login</h1>
-      {displayError}
-      <form>
-        <div className="form-group">
-          <label htmlFor="exampleInputEmail1">Email</label>
-          <input type="email" className="form-control" aria-describedby="emailHelp" placeholder="Enter email" name="email" value={email} onChange={this.handleChange} />
-        </div>
-        <div className="form-group">
-          <label htmlFor="exampleInputPassword1">Password</label>
-          <input type="password" className="form-control" placeholder="Password" value={password} name="password" onChange={this.handleChange} />
-        </div>
-        <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Login</button>
-      </form>
-    </>;
 
+  render() {
     return (
       <AuthContext.Consumer>
         {
           (user) => {
             if (user) {
-              return <Redirect to='/' />
+              return (
+                <Redirect to='/' />
+              )
             } else {
-              return displayForm;
+              return (
+                <>
+                  <div className='mx-auto d-block' style={{ 'maxWidth': '350px' }}>
+
+                    <div className="card-body text-dark">
+                      <div className='title text-center'>
+                        <h2>LOGIN PAGE</h2>
+                      </div>
+                      <br />
+                      <br />
+                      <div>
+                        <label className="sr-only">Email</label>
+                        <input type="email" className="form-control" id="inputEmail2" placeholder="Email..." name='username' onChange={this.handleChange} value={this.state.username}></input>
+                      </div>
+                      <br />
+                      <div>
+                        <label className="sr-only">Password</label>
+                        <input type="password" className="form-control" id="inputPassword2" placeholder="Password..." name='password' onChange={this.handleChange} value={this.state.password}></input>
+                      </div>
+                      <br />
+                      <br />
+                      <div className='buttons text-center mb-5'>
+                        <button type="button" className="btn btn-primary" onClick={this.handleSubmit}>LOGIN</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </>
+              )
             }
           }
         }
       </AuthContext.Consumer>
+
+
     )
+
   }
 }
+export default Login;
