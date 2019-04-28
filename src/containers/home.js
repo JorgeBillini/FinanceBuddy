@@ -2,7 +2,9 @@ import React from 'react';
 import axios from 'axios'
 import getStatements from '../services/getstatements';
 import StatementCard from '../components/statement_card';
+import AuthContext from '../contexts/auth'
 export default class Home extends React.Component {
+    static contextType = AuthContext;
     constructor(props){ 
         super(props);
         this.state = {
@@ -35,6 +37,7 @@ export default class Home extends React.Component {
 
     }
     componentDidMount= async(e) =>{
+        console.log(this.context)
         const userId = 1
         const statements = await getStatements(userId);
         console.log(statements);
