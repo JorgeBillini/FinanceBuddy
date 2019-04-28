@@ -228,7 +228,7 @@ class UserProfile extends Component {
               </div>
             </div>
             <div class="card-footer text-muted" style={{ marginTop: "50px" }}>
-              last logged in:
+              last logged in: 2 days ago
             </div>
           </div>
         </div>
