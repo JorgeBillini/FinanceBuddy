@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { HashRouter, Route, Switch } from "react-router-dom";
 import firebase from "./firebase";
+import axios from "axios";
 
 // ---- Pages
 import Header from "./components/navbar";
@@ -17,18 +18,36 @@ import AuthContext from "./contexts/auth";
 
 class App extends Component {
   state = {
-    user: null
+    user: { user: null, user_id: null }
   };
-
-  componentDidMount() {
-    this.unsubscribe = firebase.auth().onAuthStateChanged(user => {
+  componentDidUpdate = async () => {
+    if (this.state.user.user_id === null && this.state.user.user) {
+      const url = `http://localhost:11235/user/email/${
+        this.state.user.user.email
+      }`;
+      const { data } = await axios.get(url);
+      console.log(data);
+      const obj = {};
+      obj.user = this.state.user.user;
+      obj.user_id = data.data.id;
+      this.setState({ user: obj }, () => {
+        console.log(this.state);
+      });
+    }
+  };
+  componentDidMount = async () => {
+    this.unsubscribe = firebase.auth().onAuthStateChanged(async user => {
       if (user) {
-        this.setState({ user });
+        const obj = {};
+        obj.user = user;
+        obj.user_id = null;
+
+        this.setState({ user: obj });
       } else {
-        this.setState({ user: null });
+        this.setState({ user: { user: null, user_id: false } });
       }
     });
-  }
+  };
 
   componentWillUnmount() {
     this.unsubscribe();

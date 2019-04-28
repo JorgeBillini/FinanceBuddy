@@ -1,10 +1,14 @@
 import React from 'react';
-
+import axios from 'axios'
+import getStatements from '../services/getstatements';
+import StatementCard from '../components/statement_card';
+import AuthContext from '../contexts/auth'
 export default class Home extends React.Component {
+    static contextType = AuthContext;
     constructor(props){ 
         super(props);
         this.state = {
-        statements:[{id:1,name:"April 19",created_at:"2019-04-27T20:21:50.004Z", expenses:[
+        statements:[{id:1,name:"April 19",created_at:"2019-04-27T20:21:50.004Z",budget:1000, expenses:[
             {
                 "statement_id": 1,
                 "statement_name": "April 19",
@@ -27,32 +31,60 @@ export default class Home extends React.Component {
                 "expense_amount": 50,
                 "fixed": false
             }
-        ]}],
+        ]},{id:2,name:"April 20",created_at:"2019-04-27T20:21:50.004Z", budget:100, expenses:[]}],
         
         }
 
     }
+    componentDidMount= async(e) =>{
+        const userId = 1
+        const statements = await getStatements(userId);
+        console.log(statements);
+        this.setState({statements:statements});
+
+        
+    }
+    handleDelete = async(e) => {
+        console.log(e.target.id)
+        const id = e.target.id
+        const url = `http://localhost:11235/statement/`;
+        const response = await axios.delete(url, {
+            data:{id:id}
+        })
+        const statements = await getStatements(1);
+        if(statements.length === 0 || !statements){
+            this.setState({statements:false});
+        }
+        this.setState({statements:statements})
+    }
     render(){
+        
         return (
             <>
+            <AuthContext.Consumer>
+
             {
-                this.state.statements.map((e,i)=>{
-                    return (<div key={i}>
-                    <div className="row">
-                    <div className="col-12 col-xs-12">
-                    <h3>{e.name}</h3>
-                    </div>
-                    <div className="row">
-                    <div className="col-12 col-xs-12">
+                user =>{
+                    if (!user.user){
+                        return <h1>You're not logged in, log in here</h1>
+                    }
+                    else {
+                          return this.state.statements === false ? <h1>No statements to show</h1>:
+                            this.state.statements.map((e,i)=>{
+                                return (<div key={i}>
+                                <StatementCard item={e} handleDelete={this.handleDelete} />
+                                </div>
+                                )
+                            })
                     
-                    </div>                   
-                     </div>
-                    </div>
-                    </div>)
-                })
-        
-                
+                            
+                        
+                    }
+                }
             }
+
+            </AuthContext.Consumer>
+
             </>
         )
     }

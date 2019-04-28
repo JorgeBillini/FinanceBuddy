@@ -33,10 +33,25 @@ class UserProfile extends Component {
     };
   }
 
-  componentDidMount() {
+  componentDidMount = async () => {
     const userId = this.context.id;
-    this.getGoals(userId);
-  }
+    try {
+      const userInfo = await this.getUser();
+      const goals = await this.getGoals(userInfo);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  getUser = () => {
+    const userEmail = this.context.user.email;
+
+    Axios.get(`http://localhost:11235/user/email/${userEmail}`).then(
+      userData => {
+        return userData.data.id;
+      }
+    );
+  };
 
   getGoals = async userId => {
     try {
@@ -87,21 +102,21 @@ class UserProfile extends Component {
       currentUser: { id }
     } = this.state;
 
-    let goals = [...this.state.goals];
-    const newGoal = {
-      target: target,
-      user_id: id,
-      name: name,
-      balance: "500",
-      expires_at: expires_at
-    };
+    // let goals = [...this.state.goals];
+    // const newGoal = {
+    //   target: target,
+    //   user_id: id,
+    //   name: name,
+    //   balance: "500",
+    //   expires_at: expires_at
+    // };
 
-    goals.unshift(newGoal);
-    console.log("goals: ", goals);
+    // goals.unshift(newGoal);
+    // console.log("goals: ", goals);
 
-    this.setState({
-      goals: goals
-    });
+    // this.setState({
+    //   goals: goals
+    // });
 
     Axios.post(`http://localhost:11235/goal/`, {
       target: target,
@@ -109,7 +124,7 @@ class UserProfile extends Component {
       name: name,
       balance: "",
       expires_at: expires_at
-    });
+    }).then(this.getGoals());
   };
 
   addGoalForm = () => {
@@ -157,7 +172,7 @@ class UserProfile extends Component {
   };
 
   render() {
-    const timeLeft = <Moment durationFromNow>{"2019-05-05 01:00:00"}</Moment>;
+    // const timeLeft = <Moment durationFromNow>{"2019-05-05 01:00:00"}</Moment>;
 
     const timetogoal = (
       <Moment diff="2019-05-27" unit="days">
@@ -165,7 +180,11 @@ class UserProfile extends Component {
       </Moment>
     );
 
-    const { user, goals } = this.state;
+    // console.log("context: ", this.context);
+    const {
+      currentUser: { username, email },
+      goals
+    } = this.state;
 
     return (
       <>
@@ -174,9 +193,11 @@ class UserProfile extends Component {
             <div class="card-header" />
             <div class="card-body">
               <h5 class="card-title">
+                <h2> {username} </h2>
+                <h4> {email} </h4>
                 <h3>{timetogoal}</h3>
               </h5>
-              <p class="card-text">User Email and Info</p>
+              <p class="card-text" />
               <div class="row no-gutters">
                 <div class="col-md-4">
                   <img
@@ -207,7 +228,7 @@ class UserProfile extends Component {
               </div>
             </div>
             <div class="card-footer text-muted" style={{ marginTop: "50px" }}>
-              last logged in: 2 days ago
+              last logged in:
             </div>
           </div>
         </div>
