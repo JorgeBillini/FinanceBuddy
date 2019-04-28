@@ -7,7 +7,7 @@ export default props => {
     return(
         <div className='container'>
             <div className='row'>
-                <div className='col-12 text-center my-5'>
+                <div className='col-12 text-center my-5 theme-brown-font'>
                     <h1 style={{fontSize: 72}}>${remainder}</h1>
                 </div>
             </div>
