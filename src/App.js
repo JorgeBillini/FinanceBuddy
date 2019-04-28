@@ -46,6 +46,7 @@ class App extends Component {
               <Route path='/signup' exact component={ Signup } />
               <Route path='/login' exact component={ Login } />
               <Route path='/logout' exact component={ Logout } />
+              <Route path='/statement/:id' exact component={ StatementPage } />
               <Route component={ Error404 } />
             </Switch>
           </div>
