@@ -21,7 +21,8 @@ export default class StatementPage extends Component {
         miscExp: [],
         wantsToAddExp: false,
         whereToAdd: '',
-        expToAdd: null,
+        expNameToAdd: null,
+        expAmountToAdd: null,
         statement: null,
     }
 
