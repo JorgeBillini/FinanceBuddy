@@ -14,10 +14,10 @@ const StatementCard = props => {
     </div> : <div className="row"><div className="col-12 col-xs-12"><h1>No recent expenses</h1></div></div>
     return (
         <>
-            <div className="container-fluid" style={containerStyle}>
+            <div className="container-fluid mb-5" index={props.index} style={containerStyle}>
                 <div className="row">
                     <div className="col-6 col-xs-6">
-                        <Link to={`/statements/${props.item.id}`} style={{ textDecoration: 'none', color: 'black' }}> <h3>{props.item.name} statement</h3></Link>
+                        <Link to={`/statement/${props.item.id}`} style={{ textDecoration: 'none', color: 'black' }}> <h3>{props.item.name} statement</h3></Link>
                         <h5>Created <Moment fromNow>{props.item.created_at}</Moment></h5>
                     </div>
                     <div className="col-6 col-xs-6">
@@ -34,7 +34,7 @@ const StatementCard = props => {
                 <div className="row">
                 <div className="col-8 col-xs-8"></div>
                 <div className="col-10 col-xs-10"></div>
-                <div className="col-2 col-xs-2"><button onClick={props.handleDelete} id={props.item.id} className="btn">🗑️</button></div>
+                <div className="col-2 col-xs-2"><button onClick={props.handleDelete} id={props.item.id} value={props.index} className="btn">🗑️</button></div>
                 </div>
             </div>
 

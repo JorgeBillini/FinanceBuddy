@@ -13,19 +13,17 @@ export default class Signup extends React.Component {
     first_name:'',
     last_name:'',
     income:'',
+    firebase_token:null,
+    avatar_url:null
   }
 
   handleChange = (e) => {
     this.setState({ [e.target.name]: e.target.value });
   }
-
-  handleSubmit = async (e) => {
-    e.preventDefault();
-    const { email, password, first_name , last_name, income} = this.state;
-    const response = await firebase.auth().createUserWithEmailAndPassword(email, password)
-    const {uid,photoUrl} = response.user;
-    const url = `http://localhost:11235/user/`
-    try {
+  componentDidUpdate = async()=> {
+    if(this.state.firebase_token){
+      const {first_name,last_name,email,firebase_token,avatar_url,income} = this.state;
+      const url = `http://localhost:11235/user/`
       const post = await Axios({
         method:'post',
         url:url,
@@ -33,21 +31,29 @@ export default class Signup extends React.Component {
               first_name:first_name,
               last_name:last_name,
               email:email,
-              firebase_token:uid,
-              avatar_url:photoUrl,
+              firebase_token:firebase_token,
+              avatar_url:avatar_url,
               income:income
-          }
-      })
-      console.log(post);
-    }
-    catch(error){
-      console.log(error);
-    }
-   
-
+          }})
+          console.log(post);
+    
+    }    
+        
   }
+  
 
-  render() {
+       
+  
+  handleSubmit = async (e) => {
+    e.preventDefault();
+    const { email, password, first_name , last_name, income} = this.state;
+    const response = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    const {uid,photoUrl} = response.user;
+      this.setState({firebase_token:uid,avatar_url:photoUrl});
+    }
+    
+  
+  render(){
     const { email, password, error,first_name, last_name, income} = this.state;
     const displayError = error === '' ? '' : <div className="alert alert-danger" role="alert">{error}</div>
     const displayForm = <>
@@ -91,5 +97,4 @@ export default class Signup extends React.Component {
         }
       </AuthContext.Consumer>
     );
-  }
-}
+      }}
