@@ -9,6 +9,7 @@ import Signup from './containers/signup';
 import Login from './containers/login';
 import Error404 from './components/error404';
 import Logout from './containers/logout';
+import StatementPage from './containers/statement_page';
 
 // ---- Contexts
 import AuthContext from './contexts/auth';
@@ -45,6 +46,7 @@ class App extends Component {
               <Route path='/signup' exact component={ Signup } />
               <Route path='/login' exact component={ Login } />
               <Route path='/logout' exact component={ Logout } />
+              <Route path='/statement/:id' exact component={ StatementPage } />
               <Route component={ Error404 } />
             </Switch>
           </div>
