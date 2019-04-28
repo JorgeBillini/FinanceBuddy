@@ -13,8 +13,8 @@ class UserProfile extends Component {
     this.state = {
       currentUser: {
         id: "1",
-        username: "Taq",
-        email: "taq@email.com"
+        username: "Abdel",
+        email: "abdel@email.com"
       },
       isGoal: false,
       name: "",
