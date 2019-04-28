@@ -1,15 +1,15 @@
 // NPM MODULES
-import React, {Component,} from 'react';
-import axios from 'axios';
+import React, { Component } from "react";
+import axios from "axios";
 
 // CSS MODULES
-import './statement_page.css';
+import "./statement_page.css";
 
 // COMPONENTS
-import Goal from '../components/statement_page/goal';
-import ExpenseTables from '../components/statement_page/expense_tables';
-import SaveDeleteButtons from '../components/statement_page/save_delete';
-import AddExpenseModal from '../components/statement_page/addExpense_modal';
+import Goal from "../components/statement_page/goal";
+import ExpenseTables from "../components/statement_page/expense_tables";
+import SaveDeleteButtons from "../components/statement_page/save_delete";
+import AddExpenseModal from "../components/statement_page/addExpense_modal";
 
 export default class StatementPage extends Component {
     state = {
@@ -24,6 +24,7 @@ export default class StatementPage extends Component {
         expAmountToAdd: null,
         statement: null,
         allExp: 0,
+        saved: null,
     };
 
     componentDidMount = _ => this.loadStatementData();
@@ -31,7 +32,7 @@ export default class StatementPage extends Component {
     loadStatementData = async () => {
         const {id: statementID} = this.props.match.params;
 
-        const {data: expensesResponse} = await axios.get('http://localhost:11235/expense/all/1/2');
+        const {data: expensesResponse} = await axios.get('http://localhost:11235/expense/all/1/1');
         const {expenses,} = expensesResponse;
 
         const {data: statementResponse} = await axios.get(`http://localhost:11235/statement/${statementID}`);
@@ -55,24 +56,21 @@ export default class StatementPage extends Component {
             miscExp: state.miscExp.concat(expenses.other),
             statement,
             allExp,
+            saved: statement.saved,
         }));
     };
 
-    openExpenseModal = e => {
-        const whereToAdd = e.target.value;
-        this.setState((state) => ({
-            wantsToAddExp: !state.wantsToAddExp,
-            whereToAdd,
-        }));
-    };
-
-
-    toggleModal = e => this.setState((state) => ({
-        wantsToAddExp: !state.wantsToAddExp,
+  openExpenseModal = e => {
+    const whereToAdd = e.target.value;
+    this.setState(state => ({
+      wantsToAddExp: !state.wantsToAddExp,
+      whereToAdd
     }));
+  };
 
-    handleExpenseInfo = e => this.setState(({
-        [e.target.name]: e.target.value,
+  toggleModal = e =>
+    this.setState(state => ({
+      wantsToAddExp: !state.wantsToAddExp
     }));
 
     submitExpense = async e => {
@@ -89,7 +87,7 @@ export default class StatementPage extends Component {
             statement_id: statement.id,
             name: expNameToAdd,
         }
-        
+
         const postExpense = await axios.post('http://localhost:11235/expense', {
             fixed,
             amount: expAmountToAdd,
@@ -105,7 +103,7 @@ export default class StatementPage extends Component {
             this.setState((state) => ({
                 fixedExp: state.fixedExp.concat(expense),
                 wantsToAddExp: !state.wantsToAddExp,
-                allExp: state.allExp += expAmountToAdd,
+                allExp: state.allExp + newExpenseAmountToAdd,
             }));
         } else {
             this.setState((state) => ({
@@ -116,21 +114,43 @@ export default class StatementPage extends Component {
         }
     }
 
-    setStatement = async _ => {
-        console.log('trying to set')
-    }
+    setStatement = async e => {
+        const {name: statement_name, budget, id: statement_id,} = this.state.statement;
+        const {target, user_id, name, balance, id,} = this.state.goal[0];
+        const {allExp} = this.state;
 
-    deleteStatement = async _ => {
-        const {id,} = this.state; 
-        const deleteStatementCall = axios.delete(`http://localhost:11235/statement`, {
-            id,
+        const updateStatementCall = await axios.put('http://localhost:11235/statement', {
+            name: statement_name, 
+            budget,
+            id: statement_id,
+            saved: 'TRUE',
         })
-        this.props.history.push('/');
+
+        const updateGoalCall = await axios.put('http://localhost:11235/goal', {
+            target,
+            user_id,
+            name, 
+            balance: balance + (allExp - budget),
+            id,
+        });
+
+        this.setState((state) => ({
+            saved: 'TRUE',
+        }));
     }
 
     renderStatementPage = _ => {
-        const {wantsToAddExp, statement, goal, fixedExp, miscExp, allExp} = this.state;
-        if (wantsToAddExp) {
+        const {wantsToAddExp, statement, goal, fixedExp, miscExp, allExp, saved,} = this.state;
+        if (saved === 'TRUE') {
+            return(
+                <>
+                    <Goal statement={statement} goal={goal}
+                        fixedExp={fixedExp} miscExp={miscExp} allExp={allExp} />
+                    <ExpenseTables fixedExp={this.state.fixedExp} miscExp={this.state.miscExp} saved={saved} />
+                    <SaveDeleteButtons saved={saved} />
+                </>
+            )
+        } else if (wantsToAddExp) {
             return(
                 <>
                     <AddExpenseModal activeModal={wantsToAddExp} 
@@ -138,7 +158,7 @@ export default class StatementPage extends Component {
                             handleExpenseInfo={this.handleExpenseInfo} submitExpense={this.submitExpense} />
                     <Goal statement={statement} goal={goal}
                         fixedExp={fixedExp} miscExp={miscExp} allExp={allExp} />
-                    <ExpenseTables fixedExp={this.state.fixedExp} miscExp={this.state.miscExp} />
+                    <ExpenseTables fixedExp={this.state.fixedExp} miscExp={this.state.miscExp} saved={saved} />
                     <SaveDeleteButtons deleteStatement={this.deleteStatement} setStatement={this.setStatement} />
                 </>
             )
@@ -148,16 +168,20 @@ export default class StatementPage extends Component {
                     <Goal statement={statement} goal={goal}
                         fixedExp={fixedExp} miscExp={miscExp} allExp={allExp} />
                     <ExpenseTables fixedExp={this.state.fixedExp} miscExp={this.state.miscExp} 
-                        openExpenseModal={this.openExpenseModal} handleExpenseInfo={this.handleExpenseInfo} />
+                        openExpenseModal={this.openExpenseModal} handleExpenseInfo={this.handleExpenseInfo} saved={saved} />
                     <SaveDeleteButtons deleteStatement={this.deleteStatement} setStatement={this.setStatement} />
                 </>
             );   
         };
-    };
+    }
 
-    render () {
+    render() {
         return(
-            this.renderStatementPage()
-        );
-    };
+            <>
+                {
+                    this.renderStatementPage()
+                }
+            </>
+        )
+    }
 }
