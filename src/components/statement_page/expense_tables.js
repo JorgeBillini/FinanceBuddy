@@ -2,7 +2,7 @@ import React from 'react';
 
 export default props => {
     const handleAddClick = e => {
-        props.addExpense(e)        
+        props.openExpenseModal(e)        
     }
 
     return(
