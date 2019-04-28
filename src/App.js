@@ -15,24 +15,33 @@ import Logout from './containers/logout';
 import AuthContext from './contexts/auth';
 
 class App extends Component {
-
   state = {
     user: {user:null,user_id:null},
   }
-
+  componentDidUpdate = async() => {
+    if (this.state.user.user_id === null && this.state.user.user){
+      const url = `http://localhost:11235/user/email/${this.state.user.user.email}`;
+        const {data} =  await axios.get(url);
+        console.log(data);
+        const obj = {};
+        obj.user = this.state.user.user;
+        obj.user_id = data.data.id;
+        this.setState({user:obj},()=>{
+          console.log(this.state);
+        });
+    }
+  }
   componentDidMount = async() =>  {
     this.unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        console.log(user);
-        const url = `http://localhost:11235/user/email/${user.email}`;
-        const {data} =  await axios.get(url);
         const obj = {};
         obj.user = user;
-        obj.user_id = data.data.id
+        obj.user_id = null;
+        
         this.setState({user:obj });
       }
       else {
-        this.setState({ user: null })
+        this.setState({ user:{user:null,user_id:false} })
       }
     })
   }

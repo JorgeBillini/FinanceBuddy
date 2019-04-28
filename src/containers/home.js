@@ -37,7 +37,6 @@ export default class Home extends React.Component {
 
     }
     componentDidMount= async(e) =>{
-        console.log(this.context)
         const userId = 1
         const statements = await getStatements(userId);
         console.log(statements);
@@ -62,16 +61,30 @@ export default class Home extends React.Component {
         
         return (
             <>
-            {   this.state.statements === false ? <h1>No statements to show</h1>:
-                this.state.statements.map((e,i)=>{
-                    return (<div key={i}>
-                    <StatementCard item={e} handleDelete={this.handleDelete} />
-                    </div>
-                    )
-                })
-        
-                
+            <AuthContext.Consumer>
+
+            {
+                user =>{
+                    if (!user.user){
+                        return <h1>You're not logged in, log in here</h1>
+                    }
+                    else {
+                          return this.state.statements === false ? <h1>No statements to show</h1>:
+                            this.state.statements.map((e,i)=>{
+                                return (<div key={i}>
+                                <StatementCard item={e} handleDelete={this.handleDelete} />
+                                </div>
+                                )
+                            })
+                    
+                            
+                        
+                    }
+                }
             }
+
+            </AuthContext.Consumer>
+
             </>
         )
     }
