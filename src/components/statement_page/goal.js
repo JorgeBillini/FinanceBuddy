@@ -20,7 +20,7 @@ export default props => {
                 
                 <div className='row'>
                 <div className="col-12 mt-3">
-                    <div className="progress-bar bg-success rounded" role="progressbar" style={{ width: percentage+'%' }} aria-valuenow={percentage}
+                    <div className="progress-bar theme-green rounded theme-white-font" role="progressbar" style={{ width: percentage+'%' }} aria-valuenow={percentage}
                       aria-valuemin="0" aria-valuemax="100">{percentage}%</div>
                 </div>
                 </div>
