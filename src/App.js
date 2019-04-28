@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { HashRouter, Route, Switch } from 'react-router-dom';
 import firebase from './firebase';
+import axios from 'axios';
 
 // ---- Pages
 import Header from './components/navbar';
@@ -17,13 +18,19 @@ import AuthContext from './contexts/auth';
 class App extends Component {
 
   state = {
-    user: null
+    user: {user:null,user_id:null},
   }
 
-  componentDidMount() {
-    this.unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+  componentDidMount = async() =>  {
+    this.unsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        this.setState({ user });
+        console.log(user);
+        const url = `http://localhost:11235/user/email/${user.email}`;
+        const {data} =  await axios.get(url);
+        const obj = {};
+        obj.user = user;
+        obj.user_id = data.data.id
+        this.setState({user:obj });
       }
       else {
         this.setState({ user: null })
