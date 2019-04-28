@@ -10,7 +10,7 @@ export default class Home extends React.Component {
     constructor(props){ 
         super(props);
         this.state = {
-        userId:1,
+        userId:null,
         addingMode:false,
         statement_name:'',
         statement_budget:'',
@@ -43,13 +43,17 @@ export default class Home extends React.Component {
 
     }
     componentDidMount= async(e) =>{
-        const userId = 1
-        const statements = await getStatements(userId);
-        console.log(statements);
-        this.setState({statements:statements});
-
-        
+        setTimeout(async () => {
+            console.log(this.context, 'context');
+            const userId =this.context.user_id ;
+            const statements = await getStatements(userId);
+            console.log(statements);
+            this.setState({statements:statements,userId:userId},()=>{
+                console.log(this.state,"after update")
+            });
+        }, 1000)    
     }
+
     handleDelete = async(e) => {
         console.log(e.target.id)
         const id = e.target.id
@@ -69,10 +73,11 @@ export default class Home extends React.Component {
         // name, budget, user_id, saved
         const budget = parseInt(this.state.statement_budget)
         const url = `http://localhost:11235/statement/`
+        console.log(this.state);
         const response = await axios.post(url,{
             name:this.state.statement_name,
             budget:budget,
-            userId:1,
+            user_id:this.state.userId,
             saved:'TRUE'
         })
         if(response.status === 200){
