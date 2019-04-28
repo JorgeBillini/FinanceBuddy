@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default props => {
+    
     let allExpenses = null;
     let budget = null;
     let remainder = null
@@ -33,8 +34,8 @@ export default props => {
                     </div>
                 </div>
                 
-                <div className='row'>
-                <div className="col-12 mt-3">
+                <div className='row theme-brown-border-b'>
+                <div className="col-12 my-4 mb-5">
                     <div className="progress-bar theme-green rounded theme-brown-font" role="progressbar" style={{ width: percentage+'%' }} aria-valuenow={percentage}
                       aria-valuemin="0" aria-valuemax="100">{percentage}%</div>
                 </div>
@@ -43,8 +44,14 @@ export default props => {
 
             <div className='container'>
                 <div className='row'>
-                    <div className='col-12 text-center my-5 theme-brown-font'>
-                        <h1 style={{fontSize: 72}}>${remainder}</h1>
+                    <div className='col-6 text-center my-5 theme-brown-font'>
+                        {/* {<h1 style={{fontSize: 72}}>${remainder}</h1>} */}
+                        <h1>Budget: ${budget}</h1>
+                    </div>
+
+                    <div className='col-6 text-center my-5 theme-brown-font'>
+                        {/* {<h1 style={{fontSize: 72}}>${remainder}</h1>} */}
+                        <h1>Savings: ${remainder}</h1>
                     </div>
                 </div>
             </div>
