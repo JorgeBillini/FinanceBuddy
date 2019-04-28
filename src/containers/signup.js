@@ -19,29 +19,32 @@ export default class Signup extends React.Component {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  handleSubmit = (e) => {
+  handleSubmit = async (e) => {
     e.preventDefault();
     const { email, password, first_name , last_name, income} = this.state;
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((response) => {
-        console.log('Returns: ', response);
-        const {uid,photoUrl} = response.user;
-        const url = `http://localhost:11235/user/`
-        Axios.post(url,{
-            first_name:first_name,
-            last_name:last_name,
-            email:email,
-            firebase_token:uid,
-            avatar_url:photoUrl,
-            income:income
-        })
-        .then(response=>console.log(response))
-        .catch(e=>console.log(e));
+    const response = await firebase.auth().createUserWithEmailAndPassword(email, password)
+    const {uid,photoUrl} = response.user;
+    const url = `http://localhost:11235/user/`
+    try {
+      const post = await Axios({
+        method:'post',
+        url:url,
+        data:{
+              first_name:first_name,
+              last_name:last_name,
+              email:email,
+              firebase_token:uid,
+              avatar_url:photoUrl,
+              income:income
+          }
       })
-      .catch(err => {
-        const { message } = err;
-        this.setState({ error: message });
-      })
+      console.log(post);
+    }
+    catch(error){
+      console.log(error);
+    }
+   
+
   }
 
   render() {
@@ -79,7 +82,7 @@ export default class Signup extends React.Component {
       <AuthContext.Consumer>
         {
           (user) => {
-            if (user) {
+            if (user.user) {
               return <Redirect to='/' />
             } else {
               return displayForm;

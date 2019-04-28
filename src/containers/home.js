@@ -2,7 +2,9 @@ import React from 'react';
 import axios from 'axios'
 import getStatements from '../services/getstatements';
 import StatementCard from '../components/statement_card';
+import AuthContext from '../contexts/auth'
 export default class Home extends React.Component {
+    static contextType = AuthContext;
     constructor(props){ 
         super(props);
         this.state = {
@@ -59,16 +61,30 @@ export default class Home extends React.Component {
         
         return (
             <>
-            {   this.state.statements === false ? <h1>No statements to show</h1>:
-                this.state.statements.map((e,i)=>{
-                    return (<div key={i}>
-                    <StatementCard item={e} handleDelete={this.handleDelete} />
-                    </div>
-                    )
-                })
-        
-                
+            <AuthContext.Consumer>
+
+            {
+                user =>{
+                    if (!user.user){
+                        return <h1>You're not logged in, log in here</h1>
+                    }
+                    else {
+                          return this.state.statements === false ? <h1>No statements to show</h1>:
+                            this.state.statements.map((e,i)=>{
+                                return (<div key={i}>
+                                <StatementCard item={e} handleDelete={this.handleDelete} />
+                                </div>
+                                )
+                            })
+                    
+                            
+                        
+                    }
+                }
             }
+
+            </AuthContext.Consumer>
+
             </>
         )
     }
