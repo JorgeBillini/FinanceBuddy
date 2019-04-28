@@ -7,6 +7,8 @@ export default props => {
         props.toggle();
     }
 
+
+
     return(
         <>
             <div className='rounded'>
@@ -16,8 +18,8 @@ export default props => {
                     </ModalBody>
                     <ModalBody className=''>
                         <form>
-                            <input type='text' className='rounded col-12' placeholder='Add Expense Name...'/>
-                            <input type='text' className='rounded col-12 mt-2' placeholder='Add Expense Amount...'/>
+                            <input type='text' name='expNameToAdd' className='rounded col-12' placeholder='Add Expense Name...'/>
+                            <input type='text' name='expAmountToAdd' className='rounded col-12 mt-2' placeholder='Add Expense Amount...'/>
                             <div className='col-12 text-right mt-2'>
                                 <button type="submit" className="theme-white theme-brown-font theme-brown-border rounded">Post Expense</button>
                             </div>
