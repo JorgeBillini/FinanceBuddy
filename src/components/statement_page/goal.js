@@ -1,6 +1,7 @@
 import React from 'react';
 
 export default props => {
+    console.log(props)
     let allExpenses = null;
     let budget = null;
     let remainder = null
