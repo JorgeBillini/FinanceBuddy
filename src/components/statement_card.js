@@ -19,7 +19,6 @@ const StatementCard = props => {
                     <div className="col-6 col-xs-6">
                         <Link to={`/statements/${props.item.id}`} style={{ textDecoration: 'none', color: 'black' }}> <h3>{props.item.name} statement</h3></Link>
                         <h5>Created <Moment fromNow>{props.item.created_at}</Moment></h5>
-
                     </div>
                     <div className="col-6 col-xs-6">
                     <h1 style={{color:'#3BAA6B'}}>{calculateBudget(props.item.expenses,props.item.budget)}%</h1>
