@@ -73,6 +73,10 @@ export default class StatementPage extends Component {
       wantsToAddExp: !state.wantsToAddExp
     }));
 
+    handleExpenseInfo = e => this.setState(({
+        [e.target.name]: e.target.value,
+    }));
+
     submitExpense = async e => {
         e.preventDefault();
         
