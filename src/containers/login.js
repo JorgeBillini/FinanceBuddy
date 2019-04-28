@@ -32,8 +32,12 @@ export default class Login extends React.Component {
   render() {
     const { email, password, error } = this.state;
     const displayError = error === '' ? '' : <div className="alert alert-danger" role="alert">{error}</div>
-    const displayForm = <>
-      <h1>Login</h1>
+    const displayForm = <div className='container'>
+      <div className='row'>
+        <div className='col-12 text-center font-weight-bold'>
+          <h1>Login</h1>
+        </div>
+      </div>
       {displayError}
       <form>
         <div className="form-group">
@@ -46,7 +50,7 @@ export default class Login extends React.Component {
         </div>
         <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>Login</button>
       </form>
-    </>;
+    </div>;
 
     return (
       <AuthContext.Consumer>
